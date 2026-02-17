@@ -1,0 +1,3 @@
+[submodule "dsmr_parser"]
+	path = dsmr_parser
+	url = https://github.com/ndokter/dsmr_parser.git
