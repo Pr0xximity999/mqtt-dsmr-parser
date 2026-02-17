@@ -10,17 +10,17 @@ with open("config.json", "r") as file:
 # Generate a Client ID with the subscribe prefix.
 client_id = "mqtt-dsmr-parser"
 
-def connect_mqtt() -> mqtt_client:
-    def on_connect(client, userdata, flags, rc):
-        if rc == 0:
+def connect_mqtt(address, port) -> mqtt_client:
+    def on_connect(client, userdata, flags, reason_code):
+        if reason_code == 0:
             print("Connected to MQTT Broker!")
         else:
-            print("Failed to connect, return code %d\n", rc)
+            print("Failed to connect, return code %d\n", reason_code)
 
     client = mqtt_client.Client(mqtt_client.CallbackAPIVersion.VERSION1, client_id)
     # client.username_pw_set(username, password)
     client.on_connect = on_connect
-    client.connect(broker, port)
+    client.connect(address, port)
     return client
 
 
