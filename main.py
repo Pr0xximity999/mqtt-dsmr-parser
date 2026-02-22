@@ -11,7 +11,6 @@ def on_connect(client:mqtt_client.Client, userdata:any, flags:Dict[str, any], re
         print(f"Failed to connect, return code {reason_code}")
 
 def create_client(client_id, broker_address, broker_port=1883) -> mqtt_client:
-    
     # Create client
     client = mqtt_client.Client(mqtt_client.CallbackAPIVersion.VERSION2, client_id)
 
@@ -20,24 +19,24 @@ def create_client(client_id, broker_address, broker_port=1883) -> mqtt_client:
     client.connect(broker_address, broker_port)
     return client
 
-
-def subscribe(client: mqtt_client):
-    def on_message(client, userdata, msg):
-        print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
-
-    client.subscribe(topic)
-    client.on_message = on_message
-
+def on_message(client, userdata, msg):
+    print(f"Received `{msg.payload.decode()}` from topic:`{msg.topic}`")
 
 def run():
+    # Set default variables
+    client_id = "mqtt-dsmr-parser"
+    topic = "smartmeter/raw"
+
     # Load json config
     with open("config.json", "r") as file:
         config = json.load(file)
         
-    # Generate a Client ID with the subscribe prefix.
-    client_id = "mqtt-dsmr-parser"
-    client = create_client()
-    subscribe(client)
+    # Create the client
+    client = create_client(client_id)
+
+    # Subscribe and loop indefinetly
+    client.subscribe(topic)
+    client.on_message = on_message
     client.loop_forever()
 
 
